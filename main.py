@@ -1,12 +1,23 @@
-from PIL import Image
+from PIL import Image as im
 
 
-# Check path eligibility
-def path_check():
-    return input("Input the path of the image you would like to convert:\n")
+# Create image and convert to HSV
+def image_define():
+    img = im.new('RGB', (160, 120), color='white')
+    pixel_data = list((img.convert('HSV')).getdata())  # Converting to HSV, reading pixels
 
 
-# Open image and convert to HSV
-oi = Image.open(path_check()).convert('HSV')
-pixel_data = list(oi.getdata())
-print(pixel_data)
+# Collect user defined HSV values
+def user_hsv():
+    hsv_channels = ('HUE', 'SATURATION', 'VALUE')
+    user_hsv_values = []
+
+    for channel in hsv_channels:
+        try:
+            user_hsv_values.append(int(input(f"{channel}: ")))
+        except ValueError:
+            exit()
+
+    return user_hsv_values
+
+# Convert image to reflect user defined HSV values
