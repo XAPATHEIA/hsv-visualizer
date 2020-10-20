@@ -20,4 +20,13 @@ def user_hsv():
 
     return user_hsv_values
 
+
 # Convert image to reflect user defined HSV values
+def hsv_construction(hsv):
+    return im.fromarray((hsv[0], hsv[1], hsv[2]))
+
+
+def main():
+    hsv_construction(user_hsv())
+
+main()
