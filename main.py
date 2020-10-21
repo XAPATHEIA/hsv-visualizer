@@ -1,32 +1,68 @@
 from PIL import Image as im
+import cv2
+from cv2 import error
 
 
-# Create image and convert to HSV
-def image_define():
-    img = im.new('RGB', (160, 120), color='white')
-    pixel_data = list((img.convert('HSV')).getdata())  # Converting to HSV, reading pixels
+# Check for valid file location, read using cv2
+def img_init():
+    try:
+        img = cv2.imread(input("Enter the path of the image you would like to convert to HSV: "))
+        return img
+    except:
+        print("Incorrect Path")
 
 
-# Collect user defined HSV values
-def user_hsv():
-    hsv_channels = ('HUE', 'SATURATION', 'VALUE')
-    user_hsv_values = []
+base_img = img_init()
 
-    for channel in hsv_channels:
+
+# User interface
+def ui():
+    try:
+        choice = input("HSV) Edit HSV bands\nRGB) Convert RGB to HSV\n")
+        return choice
+    except ValueError as E:
+        print(E)
+
+
+# HSV Customization
+def hsv_adjust():
+    hsv_bands = ('HUE', 'SATURATION', 'VALUE')
+    altered_bands = []
+    for channel in hsv_bands:
         try:
-            user_hsv_values.append(int(input(f"{channel}: ")))
-        except ValueError:
-            exit()
-
-    return user_hsv_values
-
-
-# Convert image to reflect user defined HSV values
-def hsv_construction(hsv):
-    return im.fromarray((hsv[0], hsv[1], hsv[2]))
+            altered_bands.append(int(input(f"{channel} (0-3): ")))
+        except ValueError as E:
+            print(E)
+    return altered_bands
 
 
+# Constructing HSV image
+def construction(c, image):
+    if c == 'RGB':
+        hsv_img = cv2.cvtColor(base_img, cv2.COLOR_BGR2HSV)
+        return hsv_img
+    if c == 'HSV':
+        try:
+            hsv = hsv_adjust()
+            new_hsv = image[:,:hsv[2]]
+            return new_hsv
+        except IndexError:
+            print("Inputted HSV Band Integer out of range")
+
+
+# Displaying the image
+def image_display(final):
+    cv2.imshow('Original Image', base_img)
+    cv2.imshow('HSV image', final)
+
+    # Wait for input to close
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+# Executes code
 def main():
-    hsv_construction(user_hsv())
+    image_display(construction(ui(), base_img))
+
 
 main()
