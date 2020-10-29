@@ -4,6 +4,9 @@ from PIL import Image as im
 import numpy as np
 
 
+# TODO: Might need to change img_init() to return a PIL image object instead of cv2 
+#       so that I can read the pixel data and then construct using array.
+
 # Check for valid file location, read using cv2
 def img_init():
     return cv2.imread(input("Enter the path of the image you would like to convert to HSV: "))
@@ -23,13 +26,15 @@ def ui():
         
 # HSV Customization
 def hsv_adjust():
-    hsv_bands = ('HUE', 'SATURATION', 'VALUE')
-    selection = input("(H)ue\n(S)aturation\n(V)alue\n(A)ll\nSelection: ").lower()
-    if selection == 'a':
+    hsv_bands = ('hue', 'saturation', 'value')
+    selection = input("Hue\nSaturation\nValue\nAll\nSelection: ").lower()
+    if selection == 'all':
         altered_bands = []
         for channel in hsv_bands:
             if channel == hsv_bands[0]:
-                altered_bands.append((int(input(f"{channel} (0-360): "))))
+                altered_bands.append((int(input(f"{channel.upper()} (0-360): "))))
+            else:
+                altered_bands.append((int(input(f"{channel.upper()} (0-100): "))))
         return altered_bands
     else:
         return (selection, (int(input(f"{channel} (0-100): "))))
@@ -42,10 +47,12 @@ def construction(c, image):
         hsv_img = cv2.cvtColor(base_img, cv2.COLOR_BGR2HSV)
         return hsv_img
     if c == 'e':
-        try:
-            hsv = hsv_adjust()
-        except IndexError:
-            print("Inputted HSV Band Integer out of range")
+        hsv = hsv_adjust()
+        if len(hsv) == 3:
+            pass
+        else:
+            pass
+
 
 
 
